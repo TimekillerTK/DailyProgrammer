@@ -7,22 +7,38 @@ function Get-NecklaceMatch {
         [string]
         $inputstring,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [AllowEmptyString()]
         [string]
-        $outputstring
+        $outputstring,
+
+        [Parameter()]
+        [switch]
+        $RepeatNumber
     )
     BEGIN {
 
         #$inputstring = "x"
+        $RepeatNumberVal = 0
 
-    }
+    } #begin
     PROCESS {
         # Should count how many iterations it has at the beginning
         # Move last character to front
         # Repeat until string is equal to input string (returning $false) while checking each result for whether it matches outputstring.
         # If it does, break the loop and return $true
         
+        
+        # String of n letters = $inputstring.count
+        # Move a letter 1 time, check if $newstring matches $inputstring
+        # If yes, $count + 1
+        # Once completed, spit out the $count
+        function RepeatNumber {
+            if ($newstring -eq $inputstring) {
+                $RepeatNumberVal++
+            }
+        }
+
         $newstring = $inputstring
 
         While ($count -ne $inputstring.Length) {
@@ -39,8 +55,6 @@ function Get-NecklaceMatch {
                 $character = $array[-1]
 
                 # Selects all objects except the last one
-                # Array.length - 2 results in -1
-                # check for null? Check for single char?
                 $arraywithoutchar = $array[0..($array.Count - 2)]
     
                 # moves $character to the front of the array
@@ -49,27 +63,49 @@ function Get-NecklaceMatch {
                 # joins all values in array to a string
                 $newstring = -join $tmp
     
+                # RepeatNumber function
+                if($PSBoundParameters.ContainsKey('RepeatNumber')) {
+                    RepeatNumber
+                }
+                
+
                 # Checks if $newstring equals $outputstring
                 if ($newstring -eq $outputstring) {
                     return $true
+                    if ($PSBoundParameters.ContainsKey('RepeatNumber')) {
+                        return $RepeatNumberVal
+                    }
+            
                     exit
-                }
-            } elseif ($inputstring.Length -le 1) {
+                } #if
+            } #if
+            elseif ($inputstring.Length -le 1) {
 
                 if ($inputstring -eq $outputstring) {
                     return $true
+                    if ($PSBoundParameters.ContainsKey('RepeatNumber')) {
+                        return $RepeatNumberVal
+                    }
+            
                     exit
-                }
+                } #if
                 
-            }
+            } #elseif
 
+        } #while
+
+        if ($PSBoundParameters.ContainsKey('RepeatNumber')) {
+            return $RepeatNumberVal
         }
 
         return $false
         
-    }
+    } #process
     END {
 
-    }
+    } #end
 
-}
+} #function
+
+
+Get-NecklaceMatch -inputstring abcabc -RepeatNumber

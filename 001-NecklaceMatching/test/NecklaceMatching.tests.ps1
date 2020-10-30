@@ -38,4 +38,17 @@ Describe "Necklace Matching" {
             Get-NecklaceMatch -InputString $stringinput -OutputString $stringoutput | Should -Be $false
         }
     }
+    Context "Optional Task 1 - Repeating String Count" {
+        $testcases = @(
+            @{stringinput = "abc"; count = 1}
+            @{stringinput = "abcabcabc"; count = 3}
+            @{stringinput = "abcabcabcx"; count = 1}
+            @{stringinput = "aaaaaa"; count = 6}
+            @{stringinput = "a"; count = 1}
+            @{stringinput = ""; count = 1}
+        )
+        It "Example <stringinput> should be <count>" {
+            Get-NecklaceMatch -InputString $stringinput -Count | Should -Be $count
+        }
+    }
 }

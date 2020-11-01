@@ -14,6 +14,7 @@ Describe "Necklace Matching" {
             @{stringinput = "nicole"; stringoutput = "lenico"}
             @{stringinput = "aabaaaaabaab"; stringoutput = "aabaabaabaaa"}
             @{stringinput = "x"; stringoutput = "x"}
+            @{stringinput = "aaaaaa"; stringoutput = "aaaaaa"}
             @{stringinput = ""; stringoutput = ""}
         )
 
@@ -39,6 +40,7 @@ Describe "Necklace Matching" {
         }
     }
     Context "Optional Task 1 - Repeating String Count" {
+
         $testcases = @(
             @{stringinput = "abc"; count = 1}
             @{stringinput = "abcabcabc"; count = 3}
@@ -47,8 +49,8 @@ Describe "Necklace Matching" {
             @{stringinput = "a"; count = 1}
             @{stringinput = ""; count = 1}
         )
-        It "Example <stringinput> should be <count>" {
-            Get-NecklaceMatch -InputString $stringinput -Count | Should -Be $count
+        It "Example <stringinput> should be <count>" -TestCases $testcases {
+            Get-NecklaceMatch -InputString $stringinput -RepeatNumber | Should -Be $count
         }
     }
 }

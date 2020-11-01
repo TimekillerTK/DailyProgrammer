@@ -17,22 +17,26 @@ function Get-NecklaceMatch {
         [Parameter(ParameterSetName = 'InputOutput')]
         [AllowEmptyString()]
         [string]
-        $outputstring,
+        $OutputString,
         
         [Parameter(Mandatory = $true, ParameterSetName = 'RepeatNumber')]
         [switch]
         $RepeatNumber
     )
     BEGIN {
-
-        #$InputString = "x"
-        $RepeatNumberVal = 0
+    
+        # This is needed to count an empty string in the inputstring as a '1', which is a requirement for one of our test cases
+        if ($InputString -eq ""){
+            $RepeatNumberVal = 1
+        } else {
+            $RepeatNumberVal = 0
+        }
 
     } #begin
     PROCESS {
         # Should count how many iterations it has at the beginning
         # Move last character to front
-        # Repeat until string is equal to input string (returning $false) while checking each result for whether it matches outputstring.
+        # Repeat until string is equal to input string (returning $false) while checking each result for whether it matches OutputString.
         # If it does, break the loop and return $true
         
         $newstring = $InputString
@@ -41,6 +45,9 @@ function Get-NecklaceMatch {
         # Move a letter 1 time, check if $newstring matches $InputString
         # If yes, $count + 1
         # Once completed, spit out the $count
+
+        # This is needed to reset the count for the Pester test
+        $count = 0
 
         While ($count -ne $InputString.Length) {
 
@@ -70,7 +77,7 @@ function Get-NecklaceMatch {
                     }
                     
                     if ($PSBoundParameters.ContainsKey('OutputString')) {
-                        if ($newstring -eq $outputstring) {
+                        if ($newstring -eq $OutputString) {
                             return $true
                             break
                         }
@@ -81,7 +88,7 @@ function Get-NecklaceMatch {
 
                     $RepeatNumberVal = 1
 
-                    if ($InputString -eq $outputstring) {
+                    if ($InputString -eq $OutputString) {
                         return $true            
                         break
                     } #if
@@ -100,6 +107,11 @@ function Get-NecklaceMatch {
             return $RepeatNumberVal
 
         } 
+        elseif (($InputString -eq "") -and ($InputString -eq "")) {
+            
+            return $true
+
+        }
         else {
             
             return $false
@@ -112,3 +124,4 @@ function Get-NecklaceMatch {
     } #end
 
 } #function
+Get-NecklaceMatch -InputString "" -OutputString ""

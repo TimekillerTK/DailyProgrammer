@@ -14,11 +14,11 @@ Describe "Yahtzee Scoring Task" {
             @{array = @(1, 1, 1, 1, 4); result = 4 }
             @{array = @(1, 1, 1, 3, 3); result = 6 }
             @{array = @(1, 2, 3, 4, 5); result = 5 }
-            @{array = @(6, 6, 6, 6, 6); result = 10 }
+            @{array = @(6, 6, 6, 6, 6); result = 30 }
         )
         It "Example array <array> should return <result>" -TestCases $testcases {
             param ($array, $result)
-            Get-YahtzeeUpper -InputNumbers $array | Should -Be $result
+            Get-YahtzeeUpper -InputArray $array | Should -Be $result
         }
     }
 }

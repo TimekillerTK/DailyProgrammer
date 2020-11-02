@@ -1,15 +1,15 @@
 function Get-YahtzeeUpper {
-    [CmdletBinding(DefaultParameterSetName='Random')]
+    [CmdletBinding(DefaultParameterSetName = 'Random')]
     param (
-        [Parameter(ParameterSetName='Specific')]
+        [Parameter(ParameterSetName = 'Specific')]
         [array]
         $InputArray,
 
-        [Parameter(ParameterSetName='Random')]
+        [Parameter(ParameterSetName = 'Random')]
         [switch]
         $RandomArray
     )
-<#
+    <#
 First we take an Array of 5 numbers (dicerolls)
 - For each possible die result, tally up how many times this result came up
 - For each possible die result, check the overall result of THISRESULT * Times it came up
@@ -17,21 +17,21 @@ First we take an Array of 5 numbers (dicerolls)
 #>
     BEGIN {
 
-        if($PSBoundParameters.ContainsKey('RandomArray')) {
+        if ($PSBoundParameters.ContainsKey('RandomArray')) {
             $Array = Get-Random -Minimum 1 -Maximum 6 -Count 5
         }
         elseif ($PSBoundParameters.ContainsKey('InputArray')) {
             $Array = $InputArray
         }
 
-        $result = [PSCustomObject]@{
-            one = 0
-            two = 0
-            three = 0
-            four = 0
-            five = 0
-            six = 0
-        }
+        $result = @(
+            [PSCustomObject]@{ Value = 1; Count = 0; Max = 0 }
+            [PSCustomObject]@{ Value = 2; Count = 0; Max = 0 }
+            [PSCustomObject]@{ Value = 3; Count = 0; Max = 0 }
+            [PSCustomObject]@{ Value = 4; Count = 0; Max = 0 }
+            [PSCustomObject]@{ Value = 5; Count = 0; Max = 0 }
+            [PSCustomObject]@{ Value = 6; Count = 0; Max = 0 }
+        )
 
     }
     PROCESS {
@@ -39,22 +39,28 @@ First we take an Array of 5 numbers (dicerolls)
         # Here we fill the $result properties with values corresponding to how many times a certain result came up
         foreach ($item in $array) {
             switch ($item) {
-                1 { $result.one =+ 1}
-                2 { $result.two =+ 1}
-                3 { $result.three =+ 1}
-                4 { $result.four =+ 1}
-                5 { $result.five =+ 1}
-                6 { $result.six =+ 1}
+                1 { $result[0].Count += 1 }
+                2 { $result[1].Count += 1 }
+                3 { $result[2].Count += 1 }
+                4 { $result[3].Count += 1 }
+                5 { $result[4].Count += 1 }
+                6 { $result[5].Count += 1 }
             }
 
         }
 
         # Here we loop through each of the properties, and we multiply the dice roll by how many times it pops up, and store the result
-        $result.psobject.Properties.name | ForEach-Object {
-            Write-Output $_
+        for ($i=0; $i -lt $result.Count ; $i++) {
+            $result[$i].Max = $result[$i].Value * $result[$i].Count
         }
 
-        return $result
+        # Here we store the highest
+        $MaxNumber = $result | Measure-Object -Property Max -Maximum
+
+        # Return the highest number
+        return $MaxNumber.Maximum
+
+
 
     }
     END {

@@ -20,4 +20,5 @@ Describe "MorseCode" {
             Get-MorseCode -String $string | Should -Be $code
         }
     }
+
 }
